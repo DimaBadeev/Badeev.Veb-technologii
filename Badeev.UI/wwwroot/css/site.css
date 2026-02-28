@@ -1,0 +1,25 @@
+header, footer {
+    background-color: rgba(var(--bs-dark-rgb));
+}
+
+.nav-color {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-unique {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .btn-unique:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
+        color: #fff;
+    }

@@ -1,0 +1,149 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Лаб 1 - Бадеев Д.А. (40332)</title>
+
+    <!-- Подключение стилей -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                <!-- Заголовок (Фамилия - ссылка на страницу, класс badge) -->
+                <a class="navbar-brand badge bg-secondary fs-6" href="#">Бадеев</a>
+
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="#">Лб 1</a>
+                    <a class="nav-item nav-link" href="#">Каталог</a>
+                    <a class="nav-item nav-link" href="#">Администрирование</a>
+                </div>
+
+                <!-- Информация пользователя (Выпадающее меню) -->
+                <div class="dropdown ms-auto nav-color">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        user1@mail.ru
+                        <img src="~/images/default-profile-picture.png" width="30" alt="User" class="rounded nav-color" />
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <span class="dropdown-item-text text-center d-block">
+                                <img src="~/images/default-profile-picture.png" width="50" alt="User" class="rounded mb-2" /><br />
+                                user1@mail.ru
+                            </span>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form id="logoutForm" class="form-inline" action="#" method="post">
+                                <button id="logout" type="submit" class="nav-link btn btn-link text-dark w-100">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЕ СОДЕРЖИМОЕ -->
+    <main class="container mt-4 mb-5">
+        <h2>Лабораторная работа №1</h2>
+        <h4 class="text-muted">Вариант 3 - Группа 40332</h4>
+
+        <hr />
+
+        <h5>Список</h5>
+        <!-- Упорядоченный список, нумерация заглавными буквами -->
+        <ol type="A" class="mb-4 text-muted" style="font-size: 0.9rem;">
+            <li>элемент 0 списка</li>
+            <li>элемент 1 списка</li>
+            <li>элемент 2 списка</li>
+            <li>элемент 3 списка</li>
+            <li>элемент 4 списка</li>
+        </ol>
+
+        <h5>Форма</h5>
+        <!-- Форма, метод POST (по заданию 3.10) -->
+        <form action="#" method="POST" class="w-50 mt-3">
+
+            <select class="form-select mb-3" name="itemSelect">
+                <option>Item 1</option>
+                <option>Item 2</option>
+            </select>
+
+            <div class="form-check text-muted" style="font-size: 0.85rem;">
+                <input class="form-check-input" type="checkbox" name="chk1" id="chk1">
+                <label class="form-check-label" for="chk1">Чек-бокс 1</label>
+            </div>
+            <div class="form-check mb-3 text-muted" style="font-size: 0.85rem;">
+                <input class="form-check-input" type="checkbox" name="chk2" id="chk2">
+                <label class="form-check-label" for="chk2">Чек-бокс 2</label>
+            </div>
+
+            <div class="mb-3 text-muted" style="font-size: 0.85rem;">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="1" checked>
+                    <label class="form-check-label" for="radio1">Радио-1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="2">
+                    <label class="form-check-label" for="radio2">Радио-2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio3" value="3">
+                    <label class="form-check-label" for="radio3">Радио-3</label>
+                </div>
+            </div>
+
+            <div class="row mb-2 align-items-center">
+                <label for="login" class="col-sm-3 col-form-label text-muted" style="font-size: 0.85rem;">Логин:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="login" name="login" placeholder="Введите имя" value="user1@mail.ru">
+                </div>
+            </div>
+
+            <div class="row mb-4 align-items-center">
+                <label for="password" class="col-sm-3 col-form-label text-muted" style="font-size: 0.85rem;">Пароль:</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль" value="123456">
+                </div>
+            </div>
+
+            <!-- УНИКАЛЬНАЯ КНОПКА ОТПРАВКИ -->
+            <button type="submit" class="btn-unique">Отправить</button>
+        </form>
+    </main>
+
+    <!-- ПОДВАЛ -->
+    <footer>
+        <div class="container">
+            <div class="navbar navbar-dark navbar-expand-md bg-dark">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-item nav-link" href="http://www.facebook.com">
+                        <i class="fa-brands fa-facebook-f fa-2x"></i>
+                    </a>
+                    <a class="nav-item nav-link" href="http://www.vk.com">
+                        <i class="fa-brands fa-vk fa-2x"></i>
+                    </a>
+                    <a class="nav-item nav-link" href="http://www.twitter.com">
+                        <i class="fa-brands fa-twitter fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Подключение скриптов -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
