@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Badeev.Domain/Badeev.Domain.csproj" Id="73085494-338c-41b5-91ec-66cdf2b49fe9" />
   <Project Path="Badeev.UI/Badeev.UI.csproj" />
 </Solution>

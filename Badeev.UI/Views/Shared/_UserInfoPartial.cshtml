@@ -1,0 +1,21 @@
+﻿<div class="dropdown ms-auto nav-color">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        badeev@mail.ru
+        <img src="~/images/default-profile-picture.png" width="30" alt="User" class="rounded nav-color" />
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+        <li>
+            <span class="dropdown-item-text text-center d-block">
+                <img src="~/images/default-profile-picture.png" width="50" alt="User" class="rounded mb-2" /><br />
+                badeev@mail.ru
+            </span>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <!-- Форма выхода через TagHelpers -->
+            <form id="logoutForm" class="form-inline text-center" asp-area="Identity" asp-page="/Account/Logout">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark w-100">Выход</button>
+            </form>
+        </li>
+    </ul>
+</div>
