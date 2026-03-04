@@ -1,0 +1,43 @@
+﻿@page
+@model Badeev.UI.Areas.Admin.Pages.IndexModel
+@{
+    ViewData["Title"] = "Управление техникой";
+}
+
+<h1 class="mb-4">Панель администратора (МЧС)</h1>
+
+<p>
+    <a href="#" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Добавить новую технику</a>
+</p>
+
+<table class="table table-bordered table-hover shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Название</th>
+            <th>Описание поломки</th>
+            <th>Стоимость (BYN)</th>
+            <th>Фото</th>
+            <th>Категория (ID)</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Equipments)
+        {
+            <tr>
+                <td class="align-middle">@item.Name</td>
+                <td class="align-middle">@item.Description</td>
+                <td class="align-middle">@item.RepairCost</td>
+                <td class="align-middle">
+                    <img src="~/@item.Image" width="80" class="rounded" alt="img" />
+                </td>
+                <td class="align-middle">@item.CategoryId</td>
+                <td class="align-middle">
+                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                    <a href="#" class="btn btn-info btn-sm text-white"><i class="fa-solid fa-info"></i> Details</a>
+                    <a href="#" class="btn btn-danger btn-sm"><i class="fa-regular fa-trash-can"></i> Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

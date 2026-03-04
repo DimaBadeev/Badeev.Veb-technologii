@@ -1,0 +1,68 @@
+﻿@model IEnumerable<EquipmentRepair>
+@{
+    ViewBag.Title = "Каталог техники";
+    var categories = ViewData["categories"] as IEnumerable<Category>;
+}
+
+<h2 class="m-3">Техника в ремонте</h2>
+
+<div class="row mb-4">
+    <!-- Выпадающий список категорий -->
+    <div class="col-md-3">
+        <ul class="nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle btn btn-dark text-white" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                    @ViewData["currentCategory"]
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-category="">Все типы техники</a>
+                    </li>
+                    @if (categories != null)
+                    {
+                        foreach (var item in categories)
+                        {
+                            <li>
+                                <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-category="@item.NormalizedName">
+                                    @item.Name
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Вывод ошибок, если есть -->
+@if (ViewData["Error"] != null)
+{
+    <h2 class="text-warning">@ViewData["Error"]</h2>
+}
+
+<!-- Вывод карточек (Сетка) -->
+@if (Model != null)
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-dark shadow-sm">
+                    <!-- Заглушка, если картинки нет -->
+                    <img src="~/@item.Image" class="card-img-top" alt="Фото техники" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text text-muted">@item.Description</p>
+                        <h5><span class="badge bg-danger">@item.RepairCost BYN</span></h5>
+                    </div>
+                    <div class="card-footer text-center bg-transparent border-top-0">
+                        <a href="#" class="btn btn-outline-primary">
+                            В корзину заявок <i class="fa-solid fa-cart-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
