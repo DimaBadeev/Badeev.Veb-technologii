@@ -1,9 +1,11 @@
 using Badeev.Domain.Entities;
 using Badeev.UI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Badeev.UI.Areas.Admin.Pages
 {
+    [Authorize(Policy = "admin")]
     public class IndexModel : PageModel
     {
         private readonly IProductService _productService;
