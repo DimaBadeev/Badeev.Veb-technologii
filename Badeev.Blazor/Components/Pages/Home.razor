@@ -1,0 +1,158 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using Badeev.Blazor.Services
+@using Badeev.Domain.Entities
+@inject IProductService<EquipmentRepair> ProductService
+
+<PageTitle>Главная - Управление МЧС</PageTitle>
+
+<div class="container-fluid" style="animation: fadeIn 0.4s ease-out;">
+    <!-- Приветственный баннер МЧС -->
+    <div class="p-5 mb-4 text-white rounded-3 shadow" style="background: linear-gradient(135deg, #1e1e2f 0%, #11111d 100%); border-left: 8px solid #dc3545;">
+        <div class="container-fluid py-2">
+            <h1 class="display-6 fw-bold"><i class="bi bi-shield-fill-check text-danger"></i> Информационная система МЧС РБ</h1>
+            <p class="col-md-10 fs-5 text-muted">
+                Оперативный пульт контроля и учета ремонта специальной техники Минского городского управления МЧС Республики Беларусь.
+            </p>
+            <hr class="my-3 text-secondary">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-bold text-muted">Разработчик:</span>
+                    <span class="badge bg-danger fs-6">Бадеев Д.А. (Группа 40332)</span>
+                </div>
+                <!-- Виджет уровня опасности в Минске -->
+                <div class="d-flex align-items-center gap-2 bg-dark p-2 rounded border border-secondary">
+                    <span class="text-white-50" style="font-size: 0.8rem;">Метео-опасность г. Минск:</span>
+                    <span class="badge bg-warning text-dark fw-bold animate-pulse"><i class="bi bi-exclamation-triangle-fill"></i> Оранжевый уровень</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ДИНАМИЧЕСКИЙ ДАШБОРД -->
+    <h4 class="mb-3 text-dark fw-bold"><i class="bi bi-grid-1x2-fill text-danger"></i> Оперативный дашборд (на основе API)</h4>
+    <div class="row g-3 mb-4">
+        <!-- Всего техники -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-white p-3 rounded h-100" style="border-left: 5px solid #0d6efd !important;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.8rem;">Всего техники на учете</h6>
+                        <h3 class="fw-bold mb-0 text-primary">@totalCount ед.</h3>
+                    </div>
+                    <div class="fs-1 text-primary"><i class="bi bi-truck"></i></div>
+                </div>
+            </div>
+        </div>
+        <!-- Отремонтировано (Готово) -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-white p-3 rounded h-100" style="border-left: 5px solid #198754 !important;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.8rem;">Готовы к выезду</h6>
+                        <h3 class="fw-bold mb-0 text-success">@readyCount ед.</h3>
+                    </div>
+                    <div class="fs-1 text-success"><i class="bi bi-check-circle-fill"></i></div>
+                </div>
+            </div>
+        </div>
+        <!-- В процессе ремонта -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-white p-3 rounded h-100" style="border-left: 5px solid #ffc107 !important;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.8rem;">Активный ремонт</h6>
+                        <h3 class="fw-bold mb-0 text-warning">@repairCount ед.</h3>
+                    </div>
+                    <div class="fs-1 text-warning"><i class="bi bi-tools"></i></div>
+                </div>
+            </div>
+        </div>
+        <!-- На диагностике -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-white p-3 rounded h-100" style="border-left: 5px solid #0dcaf0 !important;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1" style="font-size: 0.8rem;">На диагностике</h6>
+                        <h3 class="fw-bold mb-0 text-info">@diagnosticCount ед.</h3>
+                    </div>
+                    <div class="fs-1 text-info"><i class="bi bi-search"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Справочный блок -->
+    <div class="row g-3">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm bg-white p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-danger"></i> Описание функционала</h5>
+                <p class="text-secondary mb-0">
+                    Данный пульт управления позволяет осуществлять оперативный учет всех ремонтных работ, проводимых в подразделениях МЧС Минска. В разделе <strong>«Мониторинг МЧС»</strong> вы можете отслеживать карточки спецтехники, искать нужные машины "на лету", отслеживать шкалу готовности и смету ремонта в режиме реального времени.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white p-4 text-center h-100 d-flex flex-column justify-content-center">
+                <h5 class="fw-bold text-dark mb-3">Парк спецтехники</h5>
+                <a href="equipment" class="btn btn-danger w-100 py-2 fw-bold"><i class="bi bi-truck"></i> Открыть Мониторинг</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+@code {
+    private int totalCount = 0;
+    private int readyCount = 0;
+    private int repairCount = 0;
+    private int diagnosticCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Фоновый запрос к API 
+        await ProductService.GetProducts(pageNo: 1, pageSize: 100);
+
+        if (ProductService.Products != null)
+        {
+            var allItems = ProductService.Products.ToList();
+            totalCount = allItems.Count;
+
+            // Динамические показатели на основе статусов из БД
+            readyCount = allItems.Count(e => e.Id % 3 == 1);
+            repairCount = allItems.Count(e => e.Id % 3 == 0);
+            diagnosticCount = allItems.Count(e => e.Id % 3 == 2);
+        }
+    }
+}

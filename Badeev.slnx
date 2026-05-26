@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="Badeev.API/Badeev.API.csproj" Id="c4b723c2-1383-4818-85f4-1063fe4859cc" />
+  <Project Path="Badeev.Blazor/Badeev.Blazor.csproj" Id="a64167a4-8021-42b4-ac8d-e33cf4d52037" />
   <Project Path="Badeev.Domain/Badeev.Domain.csproj" Id="73085494-338c-41b5-91ec-66cdf2b49fe9" />
   <Project Path="Badeev.UI/Badeev.UI.csproj" />
 </Solution>

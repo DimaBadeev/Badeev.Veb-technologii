@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Badeev.UI.Data; // Подключаем твой ApplicationUser
+using Badeev.UI.Data; 
 
 namespace Badeev.UI.Areas.Identity.Pages.Account
 {
@@ -43,8 +43,9 @@ namespace Badeev.UI.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
+ 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = default!;
 
         public string? ReturnUrl { get; set; }
 
@@ -66,7 +67,10 @@ namespace Badeev.UI.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Подтверждение пароля")]
             [Compare("Password", ErrorMessage = "Пароли не совпадают.")]
+
             public string ConfirmPassword { get; set; } = string.Empty;
+            [Display(Name = "Аватарка пользователя")]
+            public IFormFile? Avatar { get; set; }
         }
 
         // 1. Метод GET (загрузка страницы) - возвращает Task
@@ -87,8 +91,17 @@ namespace Badeev.UI.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                if (Input.Avatar != null)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await Input.Avatar.CopyToAsync(memoryStream);
+                    user.Avatar = memoryStream.ToArray();
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
+        
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Пользователь успешно создал аккаунт.");
@@ -101,6 +114,7 @@ namespace Badeev.UI.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
+
 
                     await _emailSender.SendEmailAsync(Input.Email, "Подтвердите вашу почту",
                         $"Пожалуйста, подтвердите регистрацию перейдя по <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ссылке</a>.");

@@ -9,7 +9,8 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <section class="card shadow-sm p-4 border-dark">
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <!-- Начало формы -->
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" enctype="multipart/form-data" method="post">
                     <h2 class="h5 text-muted text-center mb-4">Создать новый профиль сотрудника</h2>
                     <hr />
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -32,9 +33,16 @@
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
-                    <!-- Используем твой уникальный класс кнопки btn-unique -->
+                    <!-- Поле выбора файла аватара -->
+                    <div class="mb-3">
+                        <label asp-for="Input.Avatar" class="form-label text-muted" style="font-size: 0.85rem;">Фото профиля:</label>
+                        <input asp-for="Input.Avatar" type="file" class="form-control" accept="image/*" />
+                        <span asp-validation-for="Input.Avatar" class="text-danger"></span>
+                    </div>
+
                     <button id="registerSubmit" type="submit" class="w-100 btn-unique btn-lg">Зарегистрироваться</button>
                 </form>
+                <!-- Конец формы -->
             </section>
         </div>
     </div>

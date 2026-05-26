@@ -1,0 +1,86 @@
+﻿@using Badeev.Domain.Entities
+
+@if (Equipment != null)
+{
+    var statusInfo = GetStatusInfo(Equipment.Id);
+
+    <div class="card shadow border-danger" style="width: 24rem; border-width: 2px; border-radius: 12px; overflow: hidden; animation: fadeIn 0.3s ease-in-out;">
+        <img src="@Equipment.Image" class="card-img-top" alt="Фото техники" style="height: 220px; object-fit: cover;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h4 class="card-title fw-bold text-dark mb-0">@Equipment.Name</h4>
+                <span class="badge @statusInfo.BadgeClass">@statusInfo.Text</span>
+            </div>
+            <p class="card-text text-muted mb-3" style="font-size: 0.95rem;">@Equipment.Description</p>
+
+            <!-- Прогресс-бар готовности ремонта  -->
+            <div class="my-3">
+                <div class="d-flex justify-content-between mb-1" style="font-size: 0.85rem;">
+                    <span class="fw-bold text-dark">Готовность ремонта:</span>
+                    <span class="text-danger fw-bold">@statusInfo.Progress%</span>
+                </div>
+                <div class="progress" style="height: 12px; border-radius: 6px; background-color: #e9ecef;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated @statusInfo.ProgressClass"
+                         role="progressbar"
+                         style="width: @(statusInfo.Progress)%; border-radius: 6px;"
+                         aria-valuenow="@statusInfo.Progress"
+                         aria-valuemin="0"
+                         aria-valuemax="100"></div>
+                </div>
+            </div>
+
+            <hr />
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-danger fs-6 px-3 py-2">Смета: @Equipment.RepairCost BYN</span>
+                <span class="text-secondary" style="font-size: 0.85rem;"><i class="bi bi-geo-alt-fill text-danger"></i> МГУ МЧС</span>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center p-5 text-muted border rounded bg-light w-100" style="border-style: dashed !important; border-width: 2px !important;">
+        <i class="bi bi-shield-fill-exclamation text-danger fs-1 d-block mb-2"></i>
+        <span class="fw-bold text-dark">Интерактивный пульт мониторинга МЧС</span>
+        <p class="small text-secondary mt-1 mb-0">Выберите из списка спецтехнику МЧС для отображения статуса, сметы и уровня готовности ремонта.</p>
+    </div>
+}
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@code {
+    [Parameter]
+    public EquipmentRepair? Equipment { get; set; }
+
+    [Parameter]
+    public EventCallback<EquipmentRepair> EquipmentChanged { get; set; }
+
+    // Логика расчета процентов и стилей в зависимости от ID техники
+    private (string Text, string BadgeClass, int Progress, string ProgressClass) GetStatusInfo(int id)
+    {
+        if (id % 3 == 0)
+        {
+            return ("В ремонте", "bg-warning text-dark", 45, "bg-warning");
+        }
+        else if (id % 3 == 1)
+        {
+            return ("Исправен", "bg-success", 100, "bg-success");
+        }
+        else
+        {
+            return ("Диагностика", "bg-info text-dark", 15, "bg-info");
+        }
+    }
+}

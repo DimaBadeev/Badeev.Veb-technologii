@@ -1,0 +1,131 @@
+﻿@using Badeev.Blazor.Services
+@using Badeev.Domain.Entities
+@implements IDisposable
+@rendermode InteractiveServer
+
+<!-- ПАНЕЛЬ ПОИСКА ТЕХНИКИ  -->
+<div class="mb-3 d-flex align-items-center gap-2" style="animation: slideDown 0.3s ease-out;">
+    <div class="input-group">
+        <span class="input-group-text bg-danger text-white border-danger"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control border-danger shadow-none"
+               placeholder="Поиск спецтехники по названию или описанию..."
+               @bind="SearchText" @bind:event="oninput" />
+    </div>
+    @if (!string.IsNullOrEmpty(SearchText))
+    {
+        <button class="btn btn-outline-danger" @onclick="ClearSearch">Очистить</button>
+    }
+</div>
+
+@if (FilteredProducts != null && FilteredProducts.Any())
+{
+    <div class="table-responsive" style="animation: fadeIn 0.4s ease-out;">
+        <table class="table table-striped table-hover shadow-sm align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Спецтехника МЧС РБ</th>
+                    <th>Текущий статус</th>
+                    <th class="text-center">Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in FilteredProducts)
+                {
+                    <tr>
+                        <td class="fw-bold text-dark">
+                            <i class="bi bi-truck text-danger me-2"></i> @item.Name
+                        </td>
+                        <td>
+                            @if (item.Id % 3 == 0)
+                            {
+                                <span class="badge bg-warning text-dark"><i class="bi bi-tools"></i> В ремонте</span>
+                            }
+                            else if (item.Id % 3 == 1)
+                            {
+                                <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Исправен</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark"><i class="bi bi-hourglass-split"></i> Диагностика</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-outline-danger btn-sm px-3 fw-bold shadow-sm" @onclick="() => OnEquipmentSelected(item.Id)">
+                                Подробно <i class="bi bi-arrow-right-short"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="text-center my-4 p-4 border rounded bg-light" style="border-style: dashed !important;">
+        <i class="bi bi-exclamation-triangle text-warning fs-2 mb-2 d-block"></i>
+        <span class="text-muted fw-bold">Техника с такими параметрами не найдена в базе МЧС</span>
+    </div>
+}
+
+<style>
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+@code {
+    [CascadingParameter]
+    public IProductService<EquipmentRepair> ProductService { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<int> EquipmentSelected { get; set; }
+
+    private string SearchText { get; set; } = string.Empty;
+
+    // Свойство для фильтрации на основе ввода пользователя
+    private IEnumerable<EquipmentRepair> FilteredProducts =>
+        string.IsNullOrWhiteSpace(SearchText)
+            ? ProductService.Products
+            : ProductService.Products.Where(p =>
+                p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                p.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+
+    protected override void OnInitialized()
+    {
+        ProductService.ListChanged += StateHasChanged;
+    }
+
+    private async Task OnEquipmentSelected(int id)
+    {
+        await EquipmentSelected.InvokeAsync(id);
+    }
+
+    private void ClearSearch()
+    {
+        SearchText = string.Empty;
+    }
+
+    public void Dispose()
+    {
+        ProductService.ListChanged -= StateHasChanged;
+    }
+}

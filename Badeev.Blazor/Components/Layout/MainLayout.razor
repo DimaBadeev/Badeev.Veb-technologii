@@ -1,0 +1,205 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Threading
+@inject ProtectedLocalStorage LocalStorage
+@implements IDisposable
+
+@if (!isAuthenticated)
+{
+    <!-- ЭКРАН ВХОДА В СИСТЕМУ МЧС (Авторизация) -->
+    <div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #1e1e2f 0%, #11111d 100%);">
+        <div class="card p-4 shadow-lg border-0" style="width: 25rem; border-radius: 15px; animation: slideUp 0.4s ease-out;">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-fill-exclamation text-danger" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold mt-2 text-dark">Авторизация УМЧС</h4>
+                <span class="text-muted" style="font-size: 0.85rem;">Минское городское управление</span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(loginError))
+            {
+                <div class="alert alert-danger p-2 text-center" style="font-size: 0.85rem;">
+                    <i class="bi bi-exclamation-octagon"></i> @loginError
+                </div>
+            }
+
+            <!-- Почта (Необязательное поле-заглушка) -->
+            <div class="mb-3">
+                <label class="form-label text-muted" style="font-size: 0.85rem;">Идентификатор (Email):</label>
+                <input type="text" class="form-control" placeholder="admin@mchs.gov.by" @bind="username" />
+            </div>
+
+            <!-- Пароль с подсказкой -->
+            <div class="mb-4">
+                <label class="form-label text-muted" style="font-size: 0.85rem;">Пароль:</label>
+                <input type="password" class="form-control border-danger" placeholder="Введите пароль" @bind="password" />
+                <div class="form-text text-danger mt-2 fw-bold" style="font-size: 0.85rem;">
+                    <i class="bi bi-info-circle-fill"></i> Подсказка: 123456
+                </div>
+            </div>
+
+            <button class="btn btn-danger w-100 py-2 fw-bold shadow-sm" @onclick="HandleLogin">
+                <i class="bi bi-box-arrow-in-right"></i> Войти в систему
+            </button>
+
+            <div class="text-center mt-3 text-muted" style="font-size: 0.75rem;">
+                Лабораторная работа №6
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС ПРИЛОЖЕНИЯ -->
+    <div class="container-fluid" style="animation: fadeIn 0.4s ease-out;">
+        <div class="row">
+            <!-- Боковое меню (Sidebar) -->
+            <div class="col-md-3 col-lg-2 bg-dark min-vh-100 p-3 text-white d-flex flex-column" style="box-shadow: 2px 0 10px rgba(0,0,0,0.15); animation: slideRight 0.3s ease-out;">
+                <div class="d-flex align-items-center mb-4 gap-2">
+                    <i class="bi bi-shield-fill-exclamation text-danger fs-3"></i>
+                    <span class="fs-5 fw-bold">Управление МЧС</span>
+                </div>
+                <hr class="text-secondary" />
+                <NavMenu />
+
+                <!-- Профиль пользователя внизу -->
+                <div class="mt-auto pt-3 border-top border-secondary d-flex justify-content-between align-items-center" style="font-size: 0.85rem;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-circle fs-4 text-danger"></i>
+                        <div>
+                            <div class="fw-bold" style="font-size: 0.8rem;">Бадеев Д.А.</div>
+                            <div class="text-muted" style="font-size: 0.7rem;">Группа 40332</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger border-0" @onclick="HandleLogout" title="Выйти">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Основная рабочая зона -->
+            <div class="col-md-9 col-lg-10 bg-light min-vh-100 p-4" style="animation: fadeIn 0.4s ease-out;">
+                <!-- Верхняя панель (Header) -->
+                <header class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm">
+                    <span class="text-secondary fw-bold"><i class="bi bi-laptop"></i> Минский пульт мониторинга МЧС</span>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-danger">Оперативный дежурный</span>
+                        <span class="text-dark fw-bold"><i class="bi bi-clock-fill text-danger"></i> @currentTime</span>
+                    </div>
+                </header>
+
+                <!-- Контент страницы -->
+                <article class="content">
+                    @Body
+                </article>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideRight {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+@code {
+    private bool isAuthenticated = false;
+    private string username = "";
+    private string password = "";
+    private string loginError = "";
+    private string currentTime = DateTime.Now.ToString("HH:mm:ss");
+    private Timer? clockTimer;
+
+    protected override void OnInitialized()
+    {
+        // Фоновый поток для часов (обновление каждую секунду в реальном времени)
+        clockTimer = new Timer(_ =>
+        {
+            currentTime = DateTime.Now.ToString("HH:mm:ss");
+            InvokeAsync(StateHasChanged);
+        }, null, 0, 1000);
+    }
+
+    // Проверка сессии при первой загрузке страницы в браузере 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var result = await LocalStorage.GetAsync<bool>("isAuthenticated");
+                if (result.Success && result.Value)
+                {
+                    isAuthenticated = true;
+                    StateHasChanged(); 
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        if (password == "123456")
+        {
+            isAuthenticated = true;
+            loginError = "";
+
+            // Сохраняем сессию в локальное хранилище браузера
+            await LocalStorage.SetAsync("isAuthenticated", true);
+        }
+        else
+        {
+            loginError = "Неверный пароль";
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        isAuthenticated = false;
+        username = "";
+        password = "";
+
+        // Удаляем сессию при выходе
+        await LocalStorage.DeleteAsync("isAuthenticated");
+    }
+
+    public void Dispose()
+    {
+        // Освобождаем таймер при закрытии компонента
+        clockTimer?.Dispose();
+    }
+}

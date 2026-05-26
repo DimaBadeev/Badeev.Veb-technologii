@@ -25,24 +25,24 @@ namespace Badeev.UI.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = default!; 
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = default!; 
 
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; } 
 
         [TempData]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; } 
 
         public class InputModel
         {
             [Required(ErrorMessage = "Введите адрес электронной почты.")]
             [EmailAddress(ErrorMessage = "Некорректный формат email.")]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty; 
 
             [Required(ErrorMessage = "Введите пароль.")]
             [DataType(DataType.Password)]
-            public string Password { get; set; }
+            public string Password { get; set; } = string.Empty; 
 
             [Display(Name = "Запомнить меня")]
             public bool RememberMe { get; set; }

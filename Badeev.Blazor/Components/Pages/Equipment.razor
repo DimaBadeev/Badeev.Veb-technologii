@@ -1,0 +1,46 @@
+﻿@page "/equipment"
+@rendermode InteractiveServer
+@using Badeev.Blazor.Services
+@using Badeev.Domain.Entities
+@using Badeev.Blazor.Components.EquipmentComponents
+@inject IProductService<EquipmentRepair> ProductService
+
+<div class="container my-4">
+    <!-- Карта-контейнер -->
+    <div class="card p-4 shadow border-0 bg-white">
+        <h2 class="mb-4 text-primary fw-bold">
+            <i class="bi bi-shield-fill-exclamation text-danger"></i> Мониторинг ремонта техники МЧС (Blazor)
+        </h2>
+
+        <div class="row">
+            <!-- Левая колонка: Таблица списка и Кнопки страниц -->
+            <div class="col-lg-7">
+                <CascadingValue Value="ProductService">
+                    <EquipmentList EquipmentSelected="ShowDetails" />
+                    <div class="d-flex justify-content-center mt-3">
+                        <Pager />
+                    </div>
+                </CascadingValue>
+            </div>
+
+            <!-- Правая колонка: Детализация выбранной машины -->
+            <div class="col-lg-5 d-flex justify-content-center align-items-start">
+                <EquipmentDetails Equipment="SelectedEquipment" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public EquipmentRepair? SelectedEquipment { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ProductService.GetProducts();
+    }
+
+    private void ShowDetails(int id)
+    {
+        SelectedEquipment = ProductService.Products.FirstOrDefault(e => e.Id == id);
+    }
+}

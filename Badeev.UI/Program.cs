@@ -14,13 +14,15 @@ builder.Services.AddAuthorization(opt =>
     opt.AddPolicy("admin", p => p.RequireClaim(ClaimTypes.Role, "admin"));
 });
 
-// Заглушка отправки почты (чтобы не настраивать SMTP сервер)
+// Заглушка отправки почты 
 builder.Services.AddSingleton<
     Microsoft.AspNetCore.Identity.UI.Services.IEmailSender,
     Microsoft.AspNetCore.Identity.UI.Services.NoOpEmailSender>();
+builder.Services.AddHttpClient<IProductService, ApiProductService>(opt =>
+    opt.BaseAddress = new Uri("https://localhost:7002/api/equipmentrepairs/"));
 
-builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
-builder.Services.AddScoped<IProductService, MemoryProductService>();
+builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
+    opt.BaseAddress = new Uri("https://localhost:7002/api/categories/"));
 builder.Services.AddRazorPages();
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("SqLiteConnection")

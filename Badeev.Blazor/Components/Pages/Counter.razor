@@ -1,0 +1,29 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+<PageTitle>Регистратор - МЧС</PageTitle>
+
+<div class="container" style="animation: fadeIn 0.4s ease-out;">
+    <div class="card p-5 border-0 shadow-sm bg-white">
+        <h1 class="fw-bold text-dark"><i class="bi bi-plus-circle-fill text-danger"></i> Регистратор выездов МЧС</h1>
+        <p class="text-secondary fs-5">Каждое нажатие на кнопку регистрирует новый боевой выезд пожарной бригады.</p>
+
+        <div class="my-4">
+            <div class="display-3 fw-bold text-danger">@currentCount</div>
+            <span class="text-muted fw-bold">Всего зарегистрировано боевых тревог</span>
+        </div>
+
+        <button class="btn btn-danger btn-lg px-4 py-2 fw-bold shadow" @onclick="IncrementCount">
+            <i class="bi bi-plus-lg"></i> Добавить выезд
+        </button>
+    </div>
+</div>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
